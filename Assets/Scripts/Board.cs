@@ -12,8 +12,12 @@ public class Board : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI highScoreText;
     
-    public Image[] squares;
-
+    public Image[] board1;
+    public Image[] board2;
+    public Image[] board3;
+    public Image[] board4;
+    public Image[] boards = new Image[3];
+ 
     public Sprite squareN2;
     public Sprite squareN4;
     public Sprite squareN8;
@@ -24,8 +28,10 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
+        boards = {board1, board2, board3, board4};
+        
         // Spawn squares
-        for (int i = 0; i < squares.Length; i++)
+        for (int i = 0; i < board1.Length; i++)
         {
             int randomNumber = Random.Range(1, 11);
             
@@ -42,6 +48,7 @@ public class Board : MonoBehaviour
 
     void Update()
     {
+        // Checks for control inputs
         if (controls.SwipeRight)
         {
             MergeSquaresRight();
@@ -55,167 +62,23 @@ public class Board : MonoBehaviour
         {
             MergeSquaresDown();
         }
-    }
-
-    void SpawnSquare()
-    {
-        ArrayList unsignedSquares = new ArrayList();
         
+        
+        // Sets alpha to 0 if image is not set 
+        Color alphaZero = new Color(1F,1F,1F,0F);
+        Color alphaOne = new Color(1F,1F,1F,1F);
+
         for (int i = 0; i < squares.Length; i++)
         {
+
             if (!squares[i].sprite)
             {
-                unsignedSquares.Add(i);
-            }
-        }
-
-        int randomImage = Random.Range(0, unsignedSquares.Count);
-        
-        int randomNumber = Random.Range(1, 11);
-
-        if (randomNumber <= 4)
-        {
-            squares[randomImage].sprite = squareN4;
-        }
-        else
-        {
-            squares[randomImage].sprite = squareN2;
-        }
-    }
-
-    void MergeSquaresRight()
-    {
-        int squareToRight;
-        bool merged = false;
-
-        for (int i = 0; i < squares.Length; i++)
-        {
-            if (i != 3 && i != 7 && i != 11 && i != 15)
-            {
-                squareToRight = i + 1;
+                squares[i].color = alphaZero;
             }
             else
             {
-                continue;
+                squares[i].color = alphaOne;
             }
-            
-            if (squares[i].sprite == squares[squareToRight].sprite)
-            {
-                merged = true;
-                MergeSquares(i, squareToRight);
-            }
-            else if (!squares[squareToRight].sprite && squares[i].sprite)
-            {
-                squares[squareToRight].sprite = squares[i].sprite;
-                squares[i].sprite = null;
-            }
-        }
-
-        if (merged)
-        {
-            SpawnSquare();
-        }
-    }
-    
-    void MergeSquaresLeft()
-    {
-        int squareToLeft;
-        bool merged = false;
-
-        for (int i = 0; i < squares.Length; i++)
-        {
-            if (i != 0 && i != 4 && i != 8 && i != 12)
-            {
-                squareToLeft = i + -1;
-            }
-            else
-            {
-                continue;
-            }
-            
-            if (squares[i].sprite == squares[squareToLeft].sprite)
-            {
-                merged = true;
-                MergeSquares(i, squareToLeft);
-            }
-            else if (!squares[squareToLeft].sprite && squares[i].sprite)
-            {
-                squares[squareToLeft].sprite = squares[i].sprite;
-                squares[i].sprite = null;
-            }
-        }
-        
-        if (merged)
-        {
-            SpawnSquare();
-        }
-    }
-    
-    void MergeSquaresUp()
-    {
-        int squareToUp;
-        bool merged = false;
-
-        for (int i = 0; i < squares.Length; i++)
-        {
-            if (i != 0 && i != 1 && i != 2 && i != 3)
-            {
-                squareToUp = i - 4;
-            }
-            else
-            {
-                continue;
-            }
-            
-            if (squares[i].sprite == squares[squareToUp].sprite)
-            {
-                merged = true;
-                MergeSquares(i, squareToUp);
-            }
-            else if (!squares[squareToUp].sprite && squares[i].sprite)
-            {
-                squares[squareToUp].sprite = squares[i].sprite;
-                squares[i].sprite = null;
-            }
-        }
-        
-        if (merged)
-        {
-            SpawnSquare();
-        }
-    }
-    
-    void MergeSquaresDown()
-    {
-        int squareToDown;
-        bool merged = false;
-
-        for (int i = 0; i < squares.Length; i++)
-        {
-            if (i != 12 && i != 13 && i != 14 && i != 15)
-            {
-                squareToDown = i + 4;
-            }
-            else
-            {
-                continue;
-            }
-            
-            if (squares[i].sprite == squares[squareToDown].sprite)
-            {
-                merged = true;
-                MergeSquares(i, squareToDown);
-            }
-            else if (!squares[squareToDown].sprite && squares[i].sprite)
-            {
-                squares[squareToDown].sprite = squares[i].sprite;
-                squares[i].sprite = null;
-            }
-        }
-        
-        if (merged)
-        {
-            SpawnSquare();
         }
     }
 
@@ -265,7 +128,7 @@ public class Board : MonoBehaviour
             UpdateScore(128);
         }
     }
-    
+
     public void UpdateScore(int score)
     {
         Score.CurrentScore += score;
